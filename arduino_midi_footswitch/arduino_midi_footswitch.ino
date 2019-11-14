@@ -6,7 +6,6 @@ by Hecsall (https://github.com/Hecsall)
 // https://www.arduino.cc/en/Reference/MIDIUSB
 #include "MIDIUSB.h"
 #include "variables.h"
-#include "functions.h"
 
 
 void setup()
@@ -28,56 +27,33 @@ void setup()
         pinMode(switch_pins[i], INPUT_PULLUP);
     }
     // Set currently active Layer
-    setLayer();
+    initLayer();
 }
 
 
 void loop()
 {
     // initBPM(); // BPM LED - commented because needs sync improvements
-    setLayer(); // Set which Layer we are using
-
-    byte active_layer = current_layer;
-
+    byte active_layer = checkLayer(); // Set which Layer we are using
     switch (active_layer) {
+
         case 0: 
         {
-            // statements
+            handle_buttons(0);
             break;
         }
 
         case 1:
         {
-            // statements
+            handle_buttons(1);
             break;
         }
         
         case 2:
         {
-            // statements
+            handle_settings_buttons(2);
             break;
         }
-    }
 
-    // Button operations based on current_layer
-    for (uint8_t i = 0; i < 5; i++)
-    {
-        if (current_layer < 2) // Only layers 0 and 1 are normal operational layers
-        {
-            poweroffLeds();
-            if (button_modes[current_layer][i] == 0)
-            {
-                handlePushButton(i);
-            }
-            else if (button_modes[current_layer][i] == 1)
-            {
-                handleToggleButton(i);
-            }
-        }
-        else if (current_layer == 2) // Layer 2 is the "settings" layer
-        {
-            showModeLeds();
-            handleChangeMode(i);
-        }
     }
 }
