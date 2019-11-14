@@ -1,12 +1,11 @@
 /*
-Arduino USB MIDI FootSwitch v3
+Arduino USB MIDI FootSwitch v2
 by Hecsall (https://github.com/Hecsall)
 */
 
 // https://www.arduino.cc/en/Reference/MIDIUSB
 #include "MIDIUSB.h"
 #include "variables.h"
-#include "functions.h"
 
 // Utility functions
 

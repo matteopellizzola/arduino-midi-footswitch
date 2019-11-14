@@ -1,5 +1,5 @@
 /*
-Arduino USB MIDI FootSwitch
+Arduino USB MIDI FootSwitch v1
 by Hecsall (https://github.com/Hecsall)
 */
 
