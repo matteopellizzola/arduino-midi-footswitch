@@ -3,6 +3,7 @@
 const byte button_pins[5] = {5, 6, 7, 8, 9};   // Pins where buttons are connected
 const byte switch_pins[2] = {1, 0};            // Pins where the switch is connected
 const byte led_pins[5] = {10, 16, 14, 15, 18}; // Pins where LEDs are connected
+const int BPMpin = 19; //Pin that blinks with tempo infos. Needs MIDI input from DAW
 
 // Layer: this is the currently select layer (changed by the switch)
 byte current_layer; // 0 = switch up, 1 = switch off, 2 = switch down
