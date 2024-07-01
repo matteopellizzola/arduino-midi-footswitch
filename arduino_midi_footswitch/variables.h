@@ -5,6 +5,10 @@ const byte switch_pins[2] = {1, 0};            // Pins where the switch is conne
 const byte led_pins[5] = {10, 16, 14, 15, 18}; // Pins where LEDs are connected
 const int BPMpin = 19; //Pin that blinks with tempo infos. Needs MIDI input from DAW
 
+unsigned long previousMillis = 0;
+const long interval = 15;
+const long intervalToggle = 300;
+
 // Layer: this is the currently select layer (changed by the switch)
 byte current_layer; // 0 = switch up, 1 = switch off, 2 = switch down
 

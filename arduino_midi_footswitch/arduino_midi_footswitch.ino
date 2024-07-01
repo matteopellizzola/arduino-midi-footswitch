@@ -66,43 +66,69 @@ void initBPM() {
 
 // Button in "Push" mode
 void handlePushButton(byte i) {
-  if (digitalRead(button_pins[i]) == LOW && button_states[i] == false) {
-    controlChange(0, button_layers[current_layer][i], 127);
-    MidiUSB.flush();
-    button_states[i] = true;
-    digitalWrite(led_pins[i], HIGH); // Turn the LED on
-    led_states[i] = true;
-    delay(15);
-  } else if (digitalRead(button_pins[i]) == HIGH && button_states[i] == true) {
-    controlChange(0, button_layers[current_layer][i], 0);
-    MidiUSB.flush();
-    button_states[i] = false;
-    digitalWrite(led_pins[i], LOW); // Turn the LED off
-    led_states[i] = false;
-    delay(15);
-  }
-}
+  unsigned long currentMillis = millis();
 
-// Button in "Toggle" mode
-void handleToggleButton(byte i) {
-  buttonState = digitalRead(button_pins[i]);
-  if (buttonState != lastButtonState) {
-    if (buttonState == LOW && button_states[i] == false) {
+  if (digitalRead(button_pins[i]) == LOW && button_states[i] == false) {
+    if (currentMillis - previousMillis >= interval) {
+      previousMillis = currentMillis;
       controlChange(0, button_layers[current_layer][i], 127);
       MidiUSB.flush();
       button_states[i] = true;
       digitalWrite(led_pins[i], HIGH); // Turn the LED on
       led_states[i] = true;
-    } else if (buttonState == LOW && button_states[i] == true) {
+    }
+  } else if (digitalRead(button_pins[i]) == HIGH && button_states[i] == true) {
+    if (currentMillis - previousMillis >= interval) {
+      previousMillis = currentMillis;
       controlChange(0, button_layers[current_layer][i], 0);
       MidiUSB.flush();
       button_states[i] = false;
       digitalWrite(led_pins[i], LOW); // Turn the LED off
       led_states[i] = false;
     }
-    delay(100);
+  }
+
+  if (digitalRead(button_pins[i]) == LOW) {
+    digitalWrite(led_pins[i], HIGH); // Turn the LED on
+  } else {
+    digitalWrite(led_pins[i], LOW); // Turn the LED off
+  }
+}
+
+// Button in "Toggle" mode
+void handleToggleButton(byte i) {
+  unsigned long currentMillis = millis();
+
+  buttonState = digitalRead(button_pins[i]);
+  if (buttonState != lastButtonState) {
+    if (buttonState == LOW && button_states[i] == false) {
+      if (currentMillis - previousMillis >= intervalToggle) {
+        previousMillis = currentMillis;
+        controlChange(0, button_layers[current_layer][i], 127);
+        MidiUSB.flush();
+        button_states[i] = true;
+        digitalWrite(led_pins[i], HIGH); // Turn the LED on
+        led_states[i] = true;
+      }
+    } else if (buttonState == LOW && button_states[i] == true) {
+      if (currentMillis - previousMillis >= intervalToggle) {
+        previousMillis = currentMillis;
+        controlChange(0, button_layers[current_layer][i], 0);
+        MidiUSB.flush();
+        button_states[i] = false;
+        digitalWrite(led_pins[i], LOW); // Turn the LED off
+        led_states[i] = false;
+      }
+    }
   }
   lastButtonState = buttonState;
+
+  if (button_states[i] == true) {
+    digitalWrite(led_pins[i], HIGH);
+  } else {
+    digitalWrite(led_pins[i], LOW);
+  }
+
 }
 
 // Button "Change" mode
@@ -152,6 +178,7 @@ void setLayer() {
     current_layer = 1; // Switch OFF
   } else if (digitalRead(switch_pins[0]) == HIGH && digitalRead(switch_pins[1]) == LOW && current_layer != 2) {
     current_layer = 2; // Switch DOWN
+    Serial.println("READY2");
   }
 }
 
@@ -199,6 +226,7 @@ void loop() {
       // Layer 2 is the "settings" layer
       showModeLeds();
       handleChangeMode(i);
+      digitalWrite(BPMpin, HIGH);
     }
   }
 }
